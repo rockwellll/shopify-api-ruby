@@ -150,7 +150,23 @@ module ShopifyAPI
             "Failed to delete webhook from Shopify: #{user_errors[0]["message"]}" unless user_errors.empty?
           result
         end
-
+        
+        sig do
+          params(
+            session: Auth::Session,
+            ).returns(T::Array[RegisterResult])
+        end
+        def unregister_all(session:)
+          topics = @registry.keys
+          result = T.let([], T::Array[RegisterResult])
+          
+          topics.each do |topic|
+            result << unregister(topic: topic, session: session)
+          end
+          
+          result
+        end
+        
         sig do
           params(
             topic: String,
